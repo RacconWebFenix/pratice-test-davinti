@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Como estou usando sqlite não se utiliza parametros de tamanho mas deixo um exemplo caso troque para mysql e outros
+
+model Contato {
+  id       Int        @id @default(autoincrement())
+  nome     String
+  idade    Int
+  telefone Telefone[]
+}
+
+model Telefone {
+  id        Int      @id @default(autoincrement())
+  numero    String
+  contato   Contato? @relation(fields: [contatoId], references: [id], onDelete: Cascade)
+  contatoId Int?
+}
+
+// model Contato {
+//   id       Int        @id @default(autoincrement())
+//   nome     String     @db.VarChar(100)
+//   idade    Int        @db.TinyInt(3) | @db.SmallInt
+//   telefone Telefone[]
+// }
+
+// model Telefone {
+//   id        Int      @id @default(autoincrement())
+//   numero    String   @db.VarChar(16)
+//   contato   Contato? @relation(fields: [contatoId], references: [id])
+//   contatoId Int?
+// }
