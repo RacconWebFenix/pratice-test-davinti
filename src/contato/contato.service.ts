@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { UpdateContatoDto } from './dto/update-contato.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Contato, Prisma } from '@prisma/client';
+import { logger } from 'src/main';
 
 @Injectable()
 export class ContatoService {
@@ -43,6 +44,38 @@ export class ContatoService {
     });
   }
 
+  async findByName(nome: string): Promise<Contato[]> {
+    return this.prisma.contato.findMany({
+      where: {
+        nome: {
+          contains: nome,
+        },
+      },
+      include: {
+        telefone: true,
+      },
+    });
+  }
+
+  async findByTelefone(numero: string): Promise<Contato[]> {
+    const contatos = await this.prisma.contato.findMany({
+      where: {
+        telefone: {
+          some: {
+            numero: {
+              contains: numero,
+            },
+          },
+        },
+      },
+      include: {
+        telefone: true,
+      },
+    });
+
+    return contatos;
+  }
+
   async update(id: number, data: UpdateContatoDto) {
     try {
       const result = await this.prisma.contato.update({
@@ -71,6 +104,9 @@ export class ContatoService {
       if (!result) {
         throw new NotFoundException(`Contato com id ${id} não encontrado`);
       }
+      // chamada do logger
+      const timestamp = new Date().toISOString();
+      logger.info(`Contato com id ${id} foi removido no horário: ${timestamp}`);
 
       return `Contato com id ${id} removido com sucesso`;
     } catch (error) {

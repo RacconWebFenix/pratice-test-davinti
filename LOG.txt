@@ -1,0 +1,3 @@
+{"level":"info","message":"Contato com id 16 foi removido no horário: 2024-02-23T12:52:01.269Z"}
+{"level":"info","message":"Contato com id 18 foi removido no horário: 2024-02-23T13:43:04.335Z"}
+{"level":"info","message":"Contato com id 17 foi removido no horário: 2024-02-23T13:43:07.408Z"}
